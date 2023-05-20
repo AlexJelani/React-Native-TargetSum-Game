@@ -1,24 +1,28 @@
-import React, { Component } from 'react'
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import React, {Component} from 'react';
+import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 
 //TouchableOpacity
 //TouchableHighlight
 
 export default class RandomNumber extends Component {
-    static propTypes = {
-        number: PropTypes.number.isRequired,
-    }
+  static propTypes = {
+    number: PropTypes.number.isRequired,
+  };
+
+  handlePress = () => {
+    console.log(this.props.number);
+  };
   render() {
     return (
-    <Text style={styles.random} >{this.props.number}</Text>
-
-    )
+      <TouchableOpacity onPress={this.handlePress}>
+        <Text style={styles.random}>{this.props.number}</Text>
+      </TouchableOpacity>
+    );
   }
 }
 const styles = StyleSheet.create({
-
-random: {
+  random: {
     backgroundColor: '#999',
     width: 100,
     marginHorizontal: 15,
@@ -26,5 +30,4 @@ random: {
     fontSize: 35,
     textAlign: 'center',
   },
-
-})
+});
