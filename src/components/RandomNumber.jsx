@@ -7,16 +7,22 @@ import PropTypes from 'prop-types';
 
 export default class RandomNumber extends Component {
   static propTypes = {
+    id:PropTypes.number.isRequired,
     number: PropTypes.number.isRequired,
+    isDisabled: PropTypes.bool.isRequired,
+    onPress:PropTypes.func.isRequired,
+
+
   };
 
   handlePress = () => {
-    console.log(this.props.number);
+    if(this.props.isDisabled) {return;}
+    this.props.onPress(this.props.id)
   };
   render() {
     return (
       <TouchableOpacity onPress={this.handlePress}>
-        <Text style={styles.random}>{this.props.number}</Text>
+    <Text style={[styles.random, this.props.isDisabled && styles.selected]}>{this.props.number}</Text>
       </TouchableOpacity>
     );
   }
@@ -29,5 +35,9 @@ const styles = StyleSheet.create({
     marginVertical: 25,
     fontSize: 35,
     textAlign: 'center',
+    
   },
+  selected:{
+    opacity:0.3
+  }
 });
