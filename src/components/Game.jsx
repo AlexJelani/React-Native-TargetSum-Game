@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, View, Text, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import RandomNumber from './RandomNumber';
+import shuffle from 'lodash.shuffle'
 
 class Game extends React.Component {
   static propTypes = {
@@ -12,13 +13,15 @@ class Game extends React.Component {
     selectedIds: [],
     remainingSeconds: this.props.initialSeconds 
   };
-
+  gameStatus = 'PLAYING';
   randomNumbers = Array.from({length: this.props.randomNumberCount}).map(
     () => 1 + Math.floor(10 * Math.random()),
   );
   target = this.randomNumbers
     .slice(0, this.props.randomNumberCount - 2)
     .reduce((acc, curr) => acc + curr, 0);
+
+    shuffledRandomNumbers = shuffle(this.randomNumbers);
 
     componentDidMount() {
       this.intervalId = setInterval(() => {
@@ -44,12 +47,23 @@ componentWillUnmount() {
       selectedIds: [...prevState.selectedIds, numberIndex],
     }));
   };
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.selectedIds !== this.state.selectedIds || nextState.remainingSeconds === 0) {
+      const gameStatus = this.calcGameStatus(nextState);
+      this.setState({ gameStatus }, () => {
+        if (gameStatus !== 'PLAYING') {
+          clearInterval(this.intervalId);
+        }
+      });
+    }
+  }
+  
   //gameStatus: Playing, won, lost
-  gameStatus = () => {
-    const sumSelected = this.state.selectedIds.reduce((acc, curr) => {
-      return acc + this.randomNumbers[curr];
+  calcGameStatus = (nextState) => {
+    const sumSelected = nextState.state.selectedIds.reduce((acc, curr) => {
+      return acc + this.shuffledRandomNumbers[curr];
     }, 0);
-    if(this.state.remainingSeconds === 0){
+    if(this.nextState.remainingSeconds === 0){
       return 'LOST';
     }
     if (sumSelected < this.target) {
@@ -64,7 +78,7 @@ componentWillUnmount() {
   };
 
   render() {
-    const gameStatus = this.gameStatus();
+    const gameStatus = this.gameStatus;
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -72,7 +86,7 @@ componentWillUnmount() {
             {this.target}
           </Text>
           <View style={styles.randomContainer}>
-            {this.randomNumbers.map((randomNumber, index) => (
+            {this.shuffledRandomNumbers.map((randomNumber, index) => (
               <RandomNumber
                 key={index}
                 id={index}

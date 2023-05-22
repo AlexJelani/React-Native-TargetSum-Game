@@ -9,9 +9,9 @@
     "start": "react-native start",
     "test": "jest",
     "devtools": "react-devtools"
-
   },
   "dependencies": {
+    "lodash.shuffle": "^4.2.0",
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-devsettings": "^1.0.3"
